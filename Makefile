@@ -54,6 +54,9 @@ default: all
 # DON'T MESS WITH THESE #
 # ===================== #
 
+#Store the latest git commit short identifier in $COMMIT
+COMMIT = $(shell git log -n 1 --pretty="%h")
+
 # Connects to a lab machine, copies the current directory over, and runs your
 # remote tests.
 remote:
@@ -87,7 +90,8 @@ handin: $(HANDIN_FILES) Makefile
 	$(ARCHIVE_COMMAND) $(LOCAL_HANDIN)/$(PROJECT_ARCHIVE) $^
 	@echo ">> Submitting project to handin... <<"
 	@hg files --cwd $(LOCAL_HANDIN) -I "$(PROJECT_ARCHIVE)" &>/dev/null || hg --quiet --cwd $(LOCAL_HANDIN) add $(PROJECT_ARCHIVE)
-	@hg --quiet --cwd $(LOCAL_HANDIN) commit -m "Submitted new project version"
+	@echo "Submitting new project version $(COMMIT)"
+	@hg --quiet --cwd $(LOCAL_HANDIN) commit -m "Submitted new project version $(COMMIT)"
 	@hg --quiet --cwd $(LOCAL_HANDIN) push
 	@echo ">> Success! Use \"make handout\" to test on a lab machine. <<"
 
